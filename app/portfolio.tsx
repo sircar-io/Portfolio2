@@ -31,6 +31,7 @@ export default function Portfolio() {
   useEffect(() => {
     document.documentElement.classList.add("js");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const reveals = [...document.querySelectorAll<HTMLElement>("[data-reveal]")];
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((entry) => {
@@ -60,10 +61,41 @@ export default function Portfolio() {
     };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
+
+    const hero = document.querySelector<HTMLElement>(".map-hero");
+    let pointerFrame = 0;
+    const updatePointer = (event: PointerEvent) => {
+      if (!hero) return;
+      cancelAnimationFrame(pointerFrame);
+      pointerFrame = requestAnimationFrame(() => {
+        const rect = hero.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        hero.style.setProperty("--map-x", `${x * 10}px`);
+        hero.style.setProperty("--map-y", `${y * 8}px`);
+        hero.style.setProperty("--grid-x", `${x * -4}px`);
+        hero.style.setProperty("--grid-y", `${y * -3}px`);
+      });
+    };
+    const resetPointer = () => {
+      if (!hero) return;
+      hero.style.setProperty("--map-x", "0px");
+      hero.style.setProperty("--map-y", "0px");
+      hero.style.setProperty("--grid-x", "0px");
+      hero.style.setProperty("--grid-y", "0px");
+    };
+    if (hero && finePointer && !reduced) {
+      hero.addEventListener("pointermove", updatePointer, { passive: true });
+      hero.addEventListener("pointerleave", resetPointer);
+    }
+
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(pointerFrame);
       window.removeEventListener("scroll", updateScroll);
+      hero?.removeEventListener("pointermove", updatePointer);
+      hero?.removeEventListener("pointerleave", resetPointer);
       document.documentElement.classList.remove("js");
     };
   }, []);
@@ -93,7 +125,7 @@ export default function Portfolio() {
         <div className="hero-side-note hero-side-note--left" aria-hidden="true">Strategy ↔ execution</div>
         <div className="hero-side-note hero-side-note--right" aria-hidden="true">Scroll to follow the system ↓</div>
 
-        <div className="identity-map" data-reveal>
+        <div className="identity-map hero-sequence">
           <p className="identity-kicker">Siddhartha Sarkar / Creative portfolio</p>
           <div className="sid-node">
             <div className="sid-portrait" aria-hidden="true">
@@ -109,15 +141,23 @@ export default function Portfolio() {
           <Connector className="identity-connector" />
         </div>
 
-        <div className="capability-fan" id="capabilities" data-reveal>
+        <div className="capability-fan hero-sequence" id="capabilities">
           {capabilityFamilies.map((family, index) => (
-            <article className={`capability-node capability-node--${family.key}`} key={family.title}>
+            <article
+              className={`capability-node capability-node--${family.key}`}
+              key={family.title}
+              style={{ "--hero-delay": `${1.1 + index * 0.13}s` } as React.CSSProperties}
+            >
               <header><span>0{index + 1}</span><h2>{family.title}</h2></header>
               <p>{family.thesis}</p>
               <ul>{family.skills.map((skill) => <li key={skill}>{skill}</li>)}</ul>
             </article>
           ))}
         </div>
+
+        <a className="hero-handoff" href="#value" aria-label="Continue to what Siddhartha can own">
+          <span>00 / Identity</span><i aria-hidden="true" /><b aria-hidden="true" /><span>01 / What he can own</span>
+        </a>
       </section>
 
       <section className="ownership section-pad" id="value">
