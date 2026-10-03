@@ -293,10 +293,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 720px) {
-  .site-header { padding: 14px 20px; }
+  .site-header { padding: 14px 20px; backdrop-filter: none; }
   .brand span { display: none; }
   .menu-toggle { position: relative; z-index: 2; display: flex; }
-  .site-header nav { position: fixed; inset: 0; display: flex; visibility: hidden; flex-direction: column; justify-content: center; align-items: flex-start; gap: 0; padding: 80px 28px; background: var(--paper); color: var(--ink); opacity: 0; pointer-events: none; transition: opacity .3s ease, visibility .3s; }
+  .site-header nav { position: fixed; inset: 0; display: flex; visibility: hidden; flex-direction: column; justify-content: center; align-items: flex-start; gap: 0; min-height: 100dvh; padding: max(88px, env(safe-area-inset-top)) 28px max(32px, env(safe-area-inset-bottom)); overflow-y: auto; background: var(--paper); color: var(--ink); opacity: 0; pointer-events: none; transition: opacity .3s ease, visibility .3s; }
   .site-header nav[data-open="true"] { visibility: visible; opacity: 1; pointer-events: auto; }
   .site-header:has(nav[data-open="true"]) .menu-toggle { color: var(--ink); }
   .site-header nav a { width: 100%; padding: 14px 0; border-bottom: 1px solid var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 2.8rem; font-weight: 400; letter-spacing: -.06em; text-transform: none; }
