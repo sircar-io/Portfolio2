@@ -113,8 +113,7 @@ export default function Portfolio() {
           <span>{menuOpen ? "Close" : "Index"}</span><i /><i />
         </button>
         <nav id="site-nav" aria-label="Primary navigation" data-open={menuOpen}>
-          <a href="#capabilities" onClick={closeMenu}>Capabilities</a>
-          <a href="#value" onClick={closeMenu}>Value</a>
+          <a href="#value" onClick={closeMenu}>Capabilities</a>
           <a href="#work" onClick={closeMenu}>Work</a>
           <a href="#receipts" onClick={closeMenu}>Receipts</a>
         </nav>
